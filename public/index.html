@@ -3,37 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RSS 预览器</title>
+    <title>RSS Zen Preview</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <div class="container">
-            <h1>RSS 预览器</h1>
+    <div class="container">
+        <header>
             <div class="input-group">
-                <input type="text" id="rssUrl" placeholder="输入 RSS 链接 (e.g. https://example.com/rss.xml)">
-                <button id="previewBtn">预览</button>
+                <input type="text" id="rssUrl" placeholder="输入 RSS 订阅源地址...">
+                <button id="previewBtn">查看</button>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <main class="container">
-        <div id="loading" class="hidden">正在解析 RSS，请稍候...</div>
-        <div id="error" class="hidden"></div>
-        
-        <div id="feedContent" class="hidden">
-            <div id="feedHeader">
-                <img id="feedImage" src="" alt="Channel Cover" class="hidden">
-                <div class="feed-info">
-                    <h2 id="feedTitle"></h2>
-                    <p id="feedAuthor" class="author"></p>
-                    <p id="feedDescription" class="description"></p>
+        <main>
+            <div id="loading" class="hidden">正在溯源...</div>
+            <div id="error" class="hidden"></div>
+            
+            <div id="feedContent" class="hidden">
+                <div id="feedHeader">
+                    <img id="feedImage" src="" alt="" class="hidden">
+                    <div class="feed-info">
+                        <div class="feed-title-wrapper">
+                            <h2 id="feedTitle"></h2>
+                            <div id="feedCategories"></div>
+                        </div>
+                        <p id="feedAuthor" class="author"></p>
+                        <p id="feedDescription" class="description"></p>
+                    </div>
                 </div>
+                <hr>
+                <div id="itemList"></div>
             </div>
-            <hr>
-            <div id="itemList"></div>
-        </div>
-    </main>
+        </main>
+    </div>
 
     <script src="app.js"></script>
 </body>

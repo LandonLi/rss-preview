@@ -1,173 +1,212 @@
 :root {
-    --primary-color: #2563eb;
-    --bg-color: #f8fafc;
-    --card-bg: #ffffff;
-    --text-color: #1e293b;
-    --text-secondary: #64748b;
-    --border-color: #e2e8f0;
+    --bg-color: #fdfcfb;
+    --text-primary: #2c3e50;
+    --text-secondary: #7f8c8d;
+    --text-meta: #bdc3c7;
+    --accent-color: #e0e0e0;
+    --border-color: #f5f5f5;
+    --max-width: 680px;
+    --font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Source Han Sans SC", "Noto Sans CJK SC", "WenQuanYi Micro Hei", sans-serif;
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background-color: var(--bg-color);
-    color: var(--text-color);
+    color: var(--text-primary);
+    font-family: var(--font-family);
     margin: 0;
-    line-height: 1.6;
+    line-height: 1.85; /* 增加行高以提升中文可读性 */
+    letter-spacing: 0.015em;
+    -webkit-font-smoothing: antialiased;
 }
 
 .container {
-    max-width: 800px;
+    max-width: var(--max-width);
     margin: 0 auto;
-    padding: 20px;
+    padding: 100px 24px; /* 增加顶部留白 */
 }
 
+/* Header & Input Area */
 header {
-    background: var(--card-bg);
-    border-bottom: 1px solid var(--border-color);
-    padding: 20px 0;
-    margin-bottom: 40px;
-}
-
-header h1 {
-    margin: 0 0 20px 0;
-    font-size: 24px;
+    margin-bottom: 120px; /* 留白产生高级感 */
     text-align: center;
 }
 
 .input-group {
     display: flex;
-    gap: 10px;
+    justify-content: center;
+    gap: 0;
+    border-bottom: 1px solid var(--accent-color);
+    padding-bottom: 12px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.input-group:focus-within {
+    border-color: var(--text-primary);
 }
 
 input[type="text"] {
-    flex: 1;
-    padding: 12px 16px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 16px;
+    background: transparent;
+    border: none;
     outline: none;
-    transition: border-color 0.2s;
-}
-
-input[type="text"]:focus {
-    border-color: var(--primary-color);
+    font-size: 15px;
+    width: 100%;
+    color: var(--text-primary);
+    padding: 4px 0;
+    text-align: center; /* 输入居中更平衡 */
 }
 
 button {
-    padding: 12px 24px;
-    background-color: var(--primary-color);
-    color: white;
+    background: transparent;
     border: none;
-    border-radius: 8px;
-    font-size: 16px;
+    color: var(--text-secondary);
     cursor: pointer;
-    transition: background-color 0.2s;
+    font-size: 14px;
+    padding: 4px 12px;
+    transition: all 0.3s;
+    white-space: nowrap;
 }
 
 button:hover {
-    background-color: #1d4ed8;
+    color: var(--text-primary);
+    transform: translateX(4px);
+}
+
+/* Feed Content */
+#feedHeader {
+    margin-bottom: 80px;
+}
+
+#feedTitle {
+    font-size: 38px;
+    font-weight: 600;
+    margin: 0 0 24px 0;
+    line-height: 1.25;
+}
+
+.feed-category {
+    font-size: 11px;
+    color: var(--text-secondary);
+    border: 1px solid var(--accent-color);
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-right: 8px;
+    text-transform: uppercase;
+}
+
+#feedImage {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 0; /* 直角更硬朗极简 */
+    margin-bottom: 40px;
+    filter: grayscale(100%); /* 灰度图更有禅意 */
+    transition: filter 1s;
+}
+
+#feedImage:hover {
+    filter: grayscale(0%);
+}
+
+#feedAuthor {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    letter-spacing: 0.1em;
+}
+
+#feedDescription {
+    font-size: 18px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* Items */
+.rss-item {
+    margin-bottom: 120px;
+}
+
+.rss-item h3 {
+    font-size: 26px;
+    margin: 0 0 16px 0;
+    line-height: 1.4;
+    font-weight: 500;
+}
+
+.rss-item h3 a {
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: color 0.3s;
+}
+
+.rss-item h3 a:hover {
+    color: var(--text-secondary);
+}
+
+/* 显著放大的日期样式 */
+.item-meta {
+    font-size: 16px; /* 从13px放大到16px */
+    color: var(--text-meta);
+    margin-bottom: 40px;
+    font-weight: 300;
+}
+
+.item-cover {
+    width: 100%;
+    max-height: 340px;
+    object-fit: cover;
+    margin-bottom: 40px;
+    filter: grayscale(100%);
+    transition: filter 1s;
+}
+
+.item-cover:hover {
+    filter: grayscale(0%);
+}
+
+.item-content {
+    font-size: 18px;
+    color: var(--text-primary);
+    line-height: 1.8;
+}
+
+.item-content img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 40px auto;
+}
+
+.item-content p {
+    margin-bottom: 2em;
+}
+
+.audio-player {
+    width: 100%;
+    margin-top: 40px;
+    filter: grayscale(1) invert(0.1);
+    opacity: 0.6;
 }
 
 .hidden {
     display: none;
 }
 
-#loading, #error {
+#loading {
     text-align: center;
-    padding: 20px;
-    margin: 20px 0;
-    border-radius: 8px;
+    font-size: 12px;
+    color: var(--text-meta);
+    letter-spacing: 0.4em;
+    padding: 40px 0;
 }
 
 #error {
-    background-color: #fee2e2;
-    color: #b91c1c;
-}
-
-#feedHeader {
-    display: flex;
-    gap: 20px;
-    align-items: flex-start;
-    margin-bottom: 30px;
-}
-
-#feedImage {
-    width: 120px;
-    height: 120px;
-    border-radius: 8px;
-    object-fit: cover;
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-}
-
-.feed-info h2 {
-    margin: 0 0 8px 0;
-    font-size: 28px;
-}
-
-.author {
-    font-weight: 600;
-    color: var(--text-secondary);
-    margin-bottom: 10px;
-}
-
-.description {
-    color: var(--text-secondary);
-    font-size: 16px;
-}
-
-.rss-item {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 24px;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.rss-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-}
-
-.rss-item h3 {
-    margin: 0 0 12px 0;
-    font-size: 20px;
-}
-
-.rss-item h3 a {
-    text-decoration: none;
-    color: var(--text-color);
-}
-
-.rss-item h3 a:hover {
-    color: var(--primary-color);
-}
-
-.item-meta {
+    color: #c0392b;
+    text-align: center;
     font-size: 14px;
-    color: var(--text-secondary);
-    margin-bottom: 15px;
-}
-
-.item-content {
-    font-size: 15px;
-    color: var(--text-color);
-}
-
-.item-content img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 4px;
-    margin: 10px 0;
-}
-
-.audio-player {
-    width: 100%;
-    margin-top: 20px;
 }
 
 hr {
-    border: 0;
+    border: none;
     border-top: 1px solid var(--border-color);
-    margin: 40px 0;
+    margin: 80px 0;
 }

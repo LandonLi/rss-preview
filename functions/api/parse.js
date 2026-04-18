@@ -15,16 +15,16 @@ export async function onRequest(context) {
   const parser = new Parser({
     customFields: {
       item: [
-        ['itunes:image', 'itunesImage'],
+        ['itunes:image', 'itunesImage', { keepArray: false }],
         ['itunes:duration', 'itunesDuration'],
         ['itunes:summary', 'itunesSummary'],
         ['itunes:subtitle', 'itunesSubtitle'],
         ['content:encoded', 'contentEncoded']
       ],
       feed: [
-        ['itunes:image', 'itunesImage'],
+        ['itunes:image', 'itunesImage', { keepArray: false }],
         ['itunes:author', 'itunesAuthor'],
-        ['itunes:category', 'itunesCategory']
+        ['itunes:category', 'itunesCategories', { keepArray: true }]
       ]
     }
   });
@@ -36,6 +36,16 @@ export async function onRequest(context) {
     }
     const xmlText = await response.text();
     const feed = await parser.parseString(xmlText);
+
+    // Post-processing to flatten itunes:category if necessary
+    // rss-parser sometimes returns nested structure for itunes:category
+    if (feed.itunesCategories) {
+        // Simple extraction of category text attributes
+        feed.categories_extra = feed.itunesCategories.map(c => {
+            if (c.$ && c.$.text) return c.$.text;
+            return typeof c === 'string' ? c : null;
+        }).filter(Boolean);
+    }
 
     return new Response(JSON.stringify(feed), {
       headers: {
