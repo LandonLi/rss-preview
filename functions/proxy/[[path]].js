@@ -1,42 +1,152 @@
+const ALLOWED_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
+const FORWARDED_REQUEST_HEADERS = [
+  'accept',
+  'accept-language',
+  'if-modified-since',
+  'if-none-match',
+  'range',
+  'user-agent'
+];
+const RSS_ACCEPT_HEADER = 'application/rss+xml, application/atom+xml, application/xml, text/xml;q=0.9, */*;q=0.1';
+
 export async function onRequest(context) {
   const { request } = context;
-  const urlObj = new URL(request.url);
-  const path = urlObj.pathname;
 
-  // Extract the target URL from /proxy/TARGET_URL
-  const targetUrlStr = path.replace(/^\/proxy\//, '');
+  if (request.method === 'OPTIONS') {
+    return new Response(null, {
+      status: 204,
+      headers: buildCorsHeaders()
+    });
+  }
 
-  if (!targetUrlStr) {
-    return new Response('Missing target URL', { status: 400 });
+  if (!ALLOWED_METHODS.has(request.method)) {
+    return jsonError('Method not allowed', 405, {
+      Allow: 'GET, HEAD, OPTIONS'
+    });
+  }
+
+  let targetUrl;
+  try {
+    targetUrl = extractTargetUrl(request.url);
+  } catch (error) {
+    return jsonError(error.message, 400);
+  }
+
+  if (!targetUrl) {
+    return jsonError('Missing target URL', 400);
   }
 
   try {
-    // Reconstruct the URL if it was mangled by multiple slashes
-    // (Pages might collapse slashes, so we may need to fix https:/ or similar)
-    let finalUrl = targetUrlStr;
-    if (finalUrl.startsWith('http:/') && !finalUrl.startsWith('http://')) {
-        finalUrl = finalUrl.replace('http:/', 'http://');
-    } else if (finalUrl.startsWith('https:/') && !finalUrl.startsWith('https://')) {
-        finalUrl = finalUrl.replace('https:/', 'https://');
-    }
-
-    const response = await fetch(finalUrl, {
+    const response = await fetch(targetUrl, {
       method: request.method,
-      headers: request.headers,
+      headers: buildForwardHeaders(request.headers),
       redirect: 'follow'
     });
 
-    const newHeaders = new Headers(response.headers);
-    newHeaders.set('Access-Control-Allow-Origin', '*');
-    newHeaders.set('Access-Control-Allow-Methods', 'GET, HEAD, POST, OPTIONS');
-    newHeaders.set('Access-Control-Allow-Headers', '*');
+    const responseHeaders = new Headers(response.headers);
+    applyCorsHeaders(responseHeaders);
+    responseHeaders.set('X-Proxy-Target', targetUrl);
 
     return new Response(response.body, {
       status: response.status,
       statusText: response.statusText,
-      headers: newHeaders
+      headers: responseHeaders
     });
-  } catch (err) {
-    return new Response('Proxy Error: ' + err.message, { status: 500 });
+  } catch (error) {
+    return jsonError(`Proxy Error: ${error.message}`, 502);
   }
+}
+
+function extractTargetUrl(requestUrlString) {
+  const requestUrl = new URL(requestUrlString);
+  const directPrefix = `${requestUrl.origin}/proxy/`;
+
+  let rawTarget = '';
+  if (requestUrlString.startsWith(directPrefix)) {
+    rawTarget = requestUrlString.slice(directPrefix.length);
+  } else if (requestUrl.pathname === '/proxy') {
+    rawTarget = requestUrl.searchParams.get('url') || '';
+  }
+
+  rawTarget = rawTarget.trim();
+  if (!rawTarget) {
+    return null;
+  }
+
+  const decodedTarget = safelyDecodeTarget(rawTarget);
+  const normalizedTarget = normalizeProtocol(decodedTarget);
+  const targetUrl = new URL(normalizedTarget);
+
+  if (targetUrl.protocol !== 'http:' && targetUrl.protocol !== 'https:') {
+    throw new Error('Only http(s) targets are supported');
+  }
+
+  return targetUrl.toString();
+}
+
+function safelyDecodeTarget(value) {
+  if (!/%[0-9A-Fa-f]{2}/.test(value)) {
+    return value;
+  }
+
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
+
+function normalizeProtocol(value) {
+  if (value.startsWith('http:/') && !value.startsWith('http://')) {
+    return value.replace('http:/', 'http://');
+  }
+
+  if (value.startsWith('https:/') && !value.startsWith('https://')) {
+    return value.replace('https:/', 'https://');
+  }
+
+  return value;
+}
+
+function buildForwardHeaders(incomingHeaders) {
+  const headers = new Headers();
+
+  for (const headerName of FORWARDED_REQUEST_HEADERS) {
+    const value = incomingHeaders.get(headerName);
+    if (value) {
+      headers.set(headerName, value);
+    }
+  }
+
+  if (!headers.has('accept')) {
+    headers.set('accept', RSS_ACCEPT_HEADER);
+  }
+
+  return headers;
+}
+
+function buildCorsHeaders() {
+  return {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS',
+    'Access-Control-Allow-Headers': '*'
+  };
+}
+
+function applyCorsHeaders(headers) {
+  const corsHeaders = buildCorsHeaders();
+  for (const [key, value] of Object.entries(corsHeaders)) {
+    headers.set(key, value);
+  }
+}
+
+function jsonError(message, status, extraHeaders = {}) {
+  return new Response(JSON.stringify({ error: message }), {
+    status,
+    headers: {
+      'Content-Type': 'application/json',
+      ...buildCorsHeaders(),
+      ...extraHeaders
+    }
+  });
 }

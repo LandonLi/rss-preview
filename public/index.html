@@ -3,38 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RSS Zen Preview</title>
+    <title>RSS Preview</title>
+    <meta name="description" content="A minimal, elegant RSS feed previewer with a monochrome tech aesthetic.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <header>
-            <div class="input-group">
-                <input type="text" id="rssUrl" placeholder="输入 RSS 订阅源地址...">
-                <button id="previewBtn">查看</button>
+        <header id="siteHeader">
+            <div class="header-brand">RSS</div>
+            <div class="header-input">
+                <input type="text" id="rssUrl" placeholder="ENTER FEED URL...">
             </div>
+            <button id="previewBtn">FETCH</button>
         </header>
 
         <main>
-            <div id="loading" class="hidden">正在溯源...</div>
+            <div id="loading" class="hidden">
+                <span class="loading-text">RESOLVING</span>
+            </div>
             <div id="error" class="hidden"></div>
             
             <div id="feedContent" class="hidden">
                 <div id="feedHeader">
                     <img id="feedImage" src="" alt="" class="hidden">
                     <div class="feed-info">
-                        <div class="feed-title-wrapper">
-                            <h2 id="feedTitle"></h2>
-                            <div id="feedCategories"></div>
-                        </div>
-                        <p id="feedAuthor" class="author"></p>
+                        <h1 id="feedTitle"></h1>
+                        <div id="feedMeta" class="feed-meta"></div>
                         <p id="feedDescription" class="description"></p>
                     </div>
                 </div>
-                <hr>
                 <div id="itemList"></div>
             </div>
         </main>
+
+        <footer id="siteFooter" class="hidden">
+            <span>POWERED BY RSS</span>
+        </footer>
     </div>
 
     <script src="app.js"></script>
