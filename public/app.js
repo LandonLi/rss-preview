@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (item.enclosure && item.enclosure.url && item.enclosure.type?.startsWith('audio/')) {
                 audioPlayerHtml = `
                     <div class="custom-audio-wrapper">
-                        <button class="play-btn" data-url="${item.enclosure.url}">
+                        <button class="play-btn">
                             <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                         </button>
                         <div class="audio-progress">
@@ -102,29 +102,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             }
 
-            itemEl.innerHTML = `
-                <div class="item-meta">${dateStr}${duration}</div>
-                <h3><a href="${item.link}" target="_blank" rel="noopener">${item.title}</a></h3>
-                ${itemImageHtml}
-                <div class="item-content">${content}</div>
-                ${audioPlayerHtml}
-                ${isPodcast ? '<button class="toggle-content" style="background:none;border:none;color:var(--text-muted);font-size:12px;cursor:pointer;margin-top:8px;">显示更多</button>' : ''}
-            `;
+            if (isPodcast) {
+                itemEl.innerHTML = `
+                    <div class="item-left">
+                        ${itemImageHtml || `<div style="width:120px;height:120px;background:var(--accent-bg);border:1px solid var(--border-color);"></div>`}
+                    </div>
+                    <div class="item-right">
+                        <div class="item-meta">${dateStr}${duration}</div>
+                        <h3><a href="${item.link}" target="_blank" rel="noopener">${item.title}</a></h3>
+                        <div class="item-content">${content}</div>
+                        ${audioPlayerHtml}
+                        <button class="toggle-content">READ MORE</button>
+                    </div>
+                `;
+            } else {
+                itemEl.innerHTML = `
+                    <div class="item-meta">${dateStr}</div>
+                    <h3><a href="${item.link}" target="_blank" rel="noopener">${item.title}</a></h3>
+                    ${itemImageHtml}
+                    <div class="item-content">${content}</div>
+                `;
+            }
             
             itemList.appendChild(itemEl);
 
-            // Add events for audio and toggle
-            if (audioPlayerHtml) {
-                setupAudioPlayer(itemEl.querySelector('.custom-audio-wrapper'));
-            }
+            if (audioPlayerHtml) setupAudioPlayer(itemEl.querySelector('.custom-audio-wrapper'));
+            
             if (isPodcast) {
                 const btn = itemEl.querySelector('.toggle-content');
                 const contentDiv = itemEl.querySelector('.item-content');
                 btn.addEventListener('click', () => {
                     const isCollapsed = contentDiv.style.maxHeight !== 'none';
-                    contentDiv.style.maxHeight = isCollapsed ? 'none' : '100px';
-                    contentDiv.style.maskImage = isCollapsed ? 'none' : 'linear-gradient(to bottom, black 50%, transparent 100%)';
-                    btn.textContent = isCollapsed ? '收起内容' : '显示更多';
+                    contentDiv.style.maxHeight = isCollapsed ? 'none' : '80px';
+                    contentDiv.style.maskImage = isCollapsed ? 'none' : 'linear-gradient(to bottom, black 40%, transparent 100%)';
+                    btn.textContent = isCollapsed ? 'COLLAPSE' : 'READ MORE';
                 });
             }
         });
@@ -142,7 +153,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         playBtn.addEventListener('click', () => {
             if (audio.paused) {
-                // Pause all other audio first
                 document.querySelectorAll('audio').forEach(a => {
                     if (a !== audio) {
                         a.pause();
@@ -161,7 +171,6 @@ document.addEventListener('DOMContentLoaded', () => {
         audio.addEventListener('timeupdate', () => {
             const percent = (audio.currentTime / audio.duration) * 100;
             progressFill.style.width = `${percent}%`;
-            
             const curMin = Math.floor(audio.currentTime / 60);
             const curSec = Math.floor(audio.currentTime % 60).toString().padStart(2, '0');
             const durMin = Math.floor(audio.duration / 60) || 0;
