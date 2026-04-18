@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSS 预览器</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>RSS 预览器</h1>
+            <div class="input-group">
+                <input type="text" id="rssUrl" placeholder="输入 RSS 链接 (e.g. https://example.com/rss.xml)">
+                <button id="previewBtn">预览</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div id="loading" class="hidden">正在解析 RSS，请稍候...</div>
+        <div id="error" class="hidden"></div>
+        
+        <div id="feedContent" class="hidden">
+            <div id="feedHeader">
+                <img id="feedImage" src="" alt="Channel Cover" class="hidden">
+                <div class="feed-info">
+                    <h2 id="feedTitle"></h2>
+                    <p id="feedAuthor" class="author"></p>
+                    <p id="feedDescription" class="description"></p>
+                </div>
+            </div>
+            <hr>
+            <div id="itemList"></div>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
