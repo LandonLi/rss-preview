@@ -49,7 +49,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Channel Image (iTunes focus)
         const feedImage = document.getElementById('feedImage');
-        const channelImageUrl = data.itunesImage || (data.image && data.image.url);
+        let channelImageUrl = data.itunesImage;
+        if (channelImageUrl && typeof channelImageUrl === 'object') channelImageUrl = channelImageUrl.url;
+        if (!channelImageUrl) channelImageUrl = (data.image && data.image.url);
+
         if (channelImageUrl) {
             feedImage.src = channelImageUrl;
             feedImage.classList.remove('hidden');
@@ -72,7 +75,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const duration = item.itunesDuration ? ` · ${item.itunesDuration}` : '';
 
             // Image handling
-            const itemImageUrl = item.itunesImage || null;
+            let itemImageUrl = item.itunesImage;
+            if (itemImageUrl && typeof itemImageUrl === 'object') itemImageUrl = itemImageUrl.url;
+            
             let itemImageHtml = '';
             let content = item.contentEncoded || item.content || item.summary || '';
 
