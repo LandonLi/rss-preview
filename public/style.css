@@ -1,12 +1,13 @@
 :root {
-    --bg-color: #fdfcfb;
-    --text-primary: #2c3e50;
-    --text-secondary: #7f8c8d;
-    --text-meta: #bdc3c7;
-    --accent-color: #e0e0e0;
-    --border-color: #f5f5f5;
-    --max-width: 680px;
-    --font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Source Han Sans SC", "Noto Sans CJK SC", "WenQuanYi Micro Hei", sans-serif;
+    --bg-color: #ffffff;
+    --text-primary: #09090b;
+    --text-secondary: #71717a;
+    --text-muted: #a1a1aa;
+    --border-color: #e4e4e7;
+    --accent-bg: #f4f4f5;
+    --max-width: 720px;
+    --font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    --radius: 8px;
 }
 
 body {
@@ -14,199 +15,234 @@ body {
     color: var(--text-primary);
     font-family: var(--font-family);
     margin: 0;
-    line-height: 1.85; /* 增加行高以提升中文可读性 */
-    letter-spacing: 0.015em;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
 }
 
 .container {
     max-width: var(--max-width);
     margin: 0 auto;
-    padding: 100px 24px; /* 增加顶部留白 */
+    padding: 40px 24px;
 }
 
-/* Header & Input Area */
+/* Header & Input Area - More compact */
 header {
-    margin-bottom: 120px; /* 留白产生高级感 */
-    text-align: center;
+    margin-bottom: 48px;
 }
 
 .input-group {
     display: flex;
-    justify-content: center;
-    gap: 0;
-    border-bottom: 1px solid var(--accent-color);
-    padding-bottom: 12px;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    align-items: center;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 4px 12px;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .input-group:focus-within {
     border-color: var(--text-primary);
+    box-shadow: 0 0 0 2px rgba(9, 9, 11, 0.05);
 }
 
 input[type="text"] {
     background: transparent;
     border: none;
     outline: none;
-    font-size: 15px;
+    font-size: 14px;
+    height: 32px;
     width: 100%;
     color: var(--text-primary);
-    padding: 4px 0;
-    text-align: center; /* 输入居中更平衡 */
 }
 
-button {
-    background: transparent;
+button#previewBtn {
+    background: var(--text-primary);
+    color: white;
     border: none;
-    color: var(--text-secondary);
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 16px;
     cursor: pointer;
-    font-size: 14px;
-    padding: 4px 12px;
-    transition: all 0.3s;
-    white-space: nowrap;
+    transition: opacity 0.2s;
+    margin-left: 8px;
 }
 
-button:hover {
-    color: var(--text-primary);
-    transform: translateX(4px);
+button#previewBtn:hover {
+    opacity: 0.9;
 }
 
-/* Feed Content */
+/* Feed Header */
 #feedHeader {
-    margin-bottom: 80px;
+    margin-bottom: 32px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 24px;
 }
 
 #feedTitle {
-    font-size: 38px;
-    font-weight: 600;
-    margin: 0 0 24px 0;
-    line-height: 1.25;
-}
-
-.feed-category {
-    font-size: 11px;
-    color: var(--text-secondary);
-    border: 1px solid var(--accent-color);
-    padding: 2px 10px;
-    border-radius: 20px;
-    margin-right: 8px;
-    text-transform: uppercase;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 12px 0;
+    letter-spacing: -0.02em;
 }
 
 #feedImage {
-    width: 100%;
-    max-height: 400px;
+    width: 120px;
+    height: 120px;
+    border-radius: var(--radius);
     object-fit: cover;
-    border-radius: 0; /* 直角更硬朗极简 */
-    margin-bottom: 40px;
-    filter: grayscale(100%); /* 灰度图更有禅意 */
-    transition: filter 1s;
-}
-
-#feedImage:hover {
-    filter: grayscale(0%);
+    margin-bottom: 16px;
+    border: 1px solid var(--border-color);
 }
 
 #feedAuthor {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--text-secondary);
-    margin-bottom: 16px;
-    letter-spacing: 0.1em;
+    margin-bottom: 8px;
 }
 
 #feedDescription {
-    font-size: 18px;
+    font-size: 15px;
     color: var(--text-secondary);
-    line-height: 1.6;
+    margin: 0;
 }
 
 /* Items */
 .rss-item {
-    margin-bottom: 120px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 24px;
+    transition: background-color 0.2s;
+}
+
+.rss-item:hover {
+    background-color: #fafafa;
 }
 
 .rss-item h3 {
-    font-size: 26px;
-    margin: 0 0 16px 0;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
     line-height: 1.4;
-    font-weight: 500;
 }
 
 .rss-item h3 a {
     text-decoration: none;
     color: var(--text-primary);
-    transition: color 0.3s;
 }
 
 .rss-item h3 a:hover {
-    color: var(--text-secondary);
+    text-decoration: underline;
 }
 
-/* 显著放大的日期样式 */
 .item-meta {
-    font-size: 16px; /* 从13px放大到16px */
-    color: var(--text-meta);
-    margin-bottom: 40px;
-    font-weight: 300;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    display: flex;
+    gap: 12px;
 }
 
 .item-cover {
     width: 100%;
-    max-height: 340px;
+    aspect-ratio: 16 / 9;
     object-fit: cover;
-    margin-bottom: 40px;
-    filter: grayscale(100%);
-    transition: filter 1s;
-}
-
-.item-cover:hover {
-    filter: grayscale(0%);
+    border-radius: 6px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border-color);
 }
 
 .item-content {
-    font-size: 18px;
-    color: var(--text-primary);
-    line-height: 1.8;
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.6;
 }
 
-.item-content img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: 40px auto;
+/* Podcast Specific */
+.podcast-item .item-content {
+    max-height: 100px;
+    overflow: hidden;
+    position: relative;
+    mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+    margin-bottom: 16px;
 }
 
-.item-content p {
-    margin-bottom: 2em;
+.podcast-item .item-cover {
+    width: 100px;
+    height: 100px;
+    aspect-ratio: 1 / 1;
+    float: left;
+    margin-right: 16px;
+    margin-bottom: 8px;
 }
 
-.audio-player {
-    width: 100%;
-    margin-top: 40px;
-    filter: grayscale(1) invert(0.1);
-    opacity: 0.6;
+/* Custom Audio Player Style */
+.custom-audio-wrapper {
+    background: var(--accent-bg);
+    border-radius: 6px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 16px;
 }
 
-.hidden {
-    display: none;
+.play-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--text-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
 }
+
+.audio-progress {
+    flex-grow: 1;
+    height: 4px;
+    background: var(--border-color);
+    border-radius: 2px;
+    position: relative;
+    cursor: pointer;
+}
+
+.audio-progress-fill {
+    height: 100%;
+    background: var(--text-primary);
+    border-radius: 2px;
+    width: 0%;
+}
+
+.audio-time {
+    font-size: 12px;
+    color: var(--text-secondary);
+    min-width: 80px;
+    text-align: right;
+}
+
+/* Utilities */
+.hidden { display: none; }
 
 #loading {
     text-align: center;
-    font-size: 12px;
-    color: var(--text-meta);
-    letter-spacing: 0.4em;
-    padding: 40px 0;
-}
-
-#error {
-    color: #c0392b;
-    text-align: center;
+    padding: 48px;
+    color: var(--text-muted);
     font-size: 14px;
 }
 
 hr {
     border: none;
     border-top: 1px solid var(--border-color);
-    margin: 80px 0;
+    margin: 48px 0;
+}
+
+@media (max-width: 640px) {
+    .container { padding: 24px 16px; }
+    #feedImage { width: 80px; height: 80px; }
+    .podcast-item .item-cover { width: 60px; height: 60px; }
 }
